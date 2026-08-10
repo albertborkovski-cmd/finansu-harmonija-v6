@@ -94,7 +94,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
       <form className="w-full max-w-[368px] flex flex-col items-center gap-12" onSubmit={handleSubmit}>
         {/* Logo */}
         <img
-          src="/image.png"
+          src={`${import.meta.env.BASE_URL}image.png`}
           alt="Finansų Harmonija"
           style={{ width: '188.86px', height: '64px' }}
           className="object-contain"
