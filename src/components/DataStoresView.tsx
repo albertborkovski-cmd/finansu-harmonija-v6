@@ -1013,19 +1013,19 @@ export default function DataStoresView({ onNavigateToAdministration }: { onNavig
             {orderedVisible.map((col) => {
               const realIndex = columnOrder.findIndex(column => column.id === col.id);
               return (
-              <div key={col.id} className="flex flex-row items-center">
+              <div key={col.id} className="relative flex flex-shrink-0 flex-row items-center gap-[6px]" style={{ width: col.width }}>
                 {col.id === 'name' ? (
-                  <div className="relative flex flex-row items-center gap-[6px] flex-shrink-0" style={{ width: col.width }}>
+                  <>
                     <span className="font-montserrat font-medium text-[12px] leading-[18px] text-[#10233A]">{col.label}</span>
                     <ColumnSortButton columnLabel={col.label} direction={directionFor(col.id)} onDirectionChange={direction => { changeSort(col.id, direction); setCurrentPage(1); }} />
                     <ResizeHandle onMouseDown={(e) => startResize(realIndex, e)} />
-                  </div>
+                  </>
                 ) : (
-                  <div className="relative flex flex-row items-center gap-[6px] flex-shrink-0" style={{ width: col.width }}>
+                  <>
                     <span className="font-montserrat font-medium text-[12px] leading-[18px] text-[#7288A3]">{col.label}</span>
                     <ColumnSortButton columnLabel={col.label} direction={directionFor(col.id)} onDirectionChange={direction => { changeSort(col.id, direction); setCurrentPage(1); }} />
                     <ResizeHandle onMouseDown={(e) => startResize(realIndex, e)} />
-                  </div>
+                  </>
                 )}
               </div>
             )})}
@@ -1057,7 +1057,7 @@ export default function DataStoresView({ onNavigateToAdministration }: { onNavig
                   )}
                 </button>
 
-                {orderedVisible.map((col, i) => {
+                {orderedVisible.map((col) => {
                   let content: React.ReactNode;
                   if (col.id === 'name') {
                     content = (
@@ -1081,9 +1081,8 @@ export default function DataStoresView({ onNavigateToAdministration }: { onNavig
                     content = <span className="font-montserrat text-[12px] font-normal leading-[18px] text-[#10233A]">{row.creationDate}</span>;
                   }
                   return (
-                    <div key={col.id} className="flex flex-row items-center gap-3">
-                      <div className="flex-shrink-0" style={{ width: col.width }}>{content}</div>
-                      {i < orderedVisible.length - 1 && <div className="w-0 h-5 border-l border-transparent" />}
+                    <div key={col.id} className="flex h-10 flex-shrink-0 items-center overflow-hidden" style={{ width: col.width }}>
+                      {content}
                     </div>
                   );
                 })}

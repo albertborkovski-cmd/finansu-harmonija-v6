@@ -324,8 +324,7 @@ export default function SecretVaultView({ onNavigateToAdministration }: { onNavi
         <div style={{ minWidth: mainColumns.filter(column => column.visible).reduce((sum, column) => sum + column.width + 13, 82) }}>
           <div className="system-table-header-row mb-2 flex h-5 flex-row items-center gap-3 pl-3">
             {mainColumns.filter(column => column.visible).map((column, index) => (
-              <div key={column.key} className="flex flex-row items-center gap-3">
-                <div className="relative flex h-5 flex-shrink-0 items-center gap-[6px]" style={{ width: column.width }}>
+                <div key={column.key} className="relative flex h-5 flex-shrink-0 items-center gap-[6px]" style={{ width: column.width }}>
                   {column.key === 'alias' && (
                     <button
                       type="button"
@@ -348,7 +347,6 @@ export default function SecretVaultView({ onNavigateToAdministration }: { onNavi
                   <ColumnSortButton columnLabel={column.label} direction={mainDirectionFor(column.key)} onDirectionChange={direction => { changeMainSort(column.key, direction); setCurrentPage(1); }} />
                   <ResizeHandle onMouseDown={event => startResizeMain(mainColumns.findIndex(item => item.key === column.key), event)} />
                 </div>
-              </div>
             ))}
             <div className="h-5 w-[82px] flex-shrink-0" />
           </div>
@@ -361,9 +359,8 @@ export default function SecretVaultView({ onNavigateToAdministration }: { onNavi
                 rowIndex % 2 === 0 ? 'bg-[#F8FDFF]' : 'bg-white'
               } hover:bg-[#E6F2F6]`}
             >
-              {mainColumns.filter(column => column.visible).map((column, columnIndex) => (
-                <div key={column.key} className="flex flex-row items-center gap-3">
-                  <div className="flex h-10 flex-shrink-0 items-center gap-[6px] overflow-hidden" style={{ width: column.width }}>
+              {mainColumns.filter(column => column.visible).map((column) => (
+                  <div key={column.key} className="flex h-10 flex-shrink-0 items-center gap-[6px] overflow-hidden" style={{ width: column.width }}>
                     {column.key === 'alias' && (
                       <button
                         type="button"
@@ -373,7 +370,7 @@ export default function SecretVaultView({ onNavigateToAdministration }: { onNavi
                           event.stopPropagation();
                           toggleRow(entry.id);
                         }}
-                        className="relative h-[18px] w-[18px] flex-shrink-0 rounded-[6px] border transition-colors"
+                        className="relative mr-1 h-[18px] w-[18px] flex-shrink-0 rounded-[6px] border transition-colors"
                         style={selectedRows.has(entry.id)
                           ? { backgroundColor: '#007EA7', borderColor: '#007EA7' }
                           : { backgroundColor: '#FFFFFF', borderColor: '#A1B6C6' }}
@@ -389,8 +386,6 @@ export default function SecretVaultView({ onNavigateToAdministration }: { onNavi
                       {String(entry[column.key as keyof VaultEntry] ?? '—')}
                     </span>
                   </div>
-                  {columnIndex < mainColumns.filter(item => item.visible).length - 1 && <div className="h-5 w-0 border-l border-transparent" />}
-                </div>
               ))}
               <div className="ml-auto flex w-[82px] flex-shrink-0 items-center justify-end gap-1 pr-2">
                 <button
