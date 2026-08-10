@@ -11,7 +11,6 @@ import { getAdministrationGroupNames } from './AutomationSecurityAccessView';
 import { INITIAL_ADMINISTRATION_USERS } from './administrationUsersStore';
 import { ResizeHandle, useColumnResize } from './useColumnResize';
 import ColumnSortButton, { useMultiColumnSort } from './ColumnSortButton';
-import { SystemDropdown } from './ml/CreateSetPanel';
 
 export type AdministrationSection =
   | 'human-task-types'
@@ -226,30 +225,24 @@ function LogsView() {
           <span className="font-montserrat text-[11px] text-[#7288A3]">Search query</span>
           <OcrSearchField ariaLabel="Search administration logs" value={query} onChange={setQuery} />
         </label>
-        <div className="flex flex-col gap-1">
-          <span className="font-montserrat text-[11px] text-[#7288A3]">Filter by domain</span>
-          <SystemDropdown
-            value={domain}
-            options={['ALL', 'CONTROL_SERVER', 'SCHEDULER', 'NOTIFICATIONS', 'SECURITY']}
-            placeholder="Select domain"
-            ariaLabel="Filter logs by domain"
-            open={domainOpen}
-            onToggle={() => { setSeverityOpen(false); setDomainOpen(open => !open); }}
-            onSelect={value => { setDomain(value); setDomainOpen(false); }}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <span className="font-montserrat text-[11px] text-[#7288A3]">Filter by severity</span>
-          <SystemDropdown
-            value={severity}
-            options={['ALL', 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR']}
-            placeholder="Select severity"
-            ariaLabel="Filter logs by severity"
-            open={severityOpen}
-            onToggle={() => { setDomainOpen(false); setSeverityOpen(open => !open); }}
-            onSelect={value => { setSeverity(value); setSeverityOpen(false); }}
-          />
-        </div>
+        <LogsFilterDropdown
+          label="Filter by domain"
+          value={domain}
+          options={['ALL', 'CONTROL_SERVER', 'SCHEDULER', 'NOTIFICATIONS', 'SECURITY']}
+          ariaLabel="Filter logs by domain"
+          open={domainOpen}
+          onToggle={() => { setSeverityOpen(false); setDomainOpen(open => !open); }}
+          onSelect={value => { setDomain(value); setDomainOpen(false); }}
+        />
+        <LogsFilterDropdown
+          label="Filter by severity"
+          value={severity}
+          options={['ALL', 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR']}
+          ariaLabel="Filter logs by severity"
+          open={severityOpen}
+          onToggle={() => { setDomainOpen(false); setSeverityOpen(open => !open); }}
+          onSelect={value => { setSeverity(value); setSeverityOpen(false); }}
+        />
       </div>
       <div ref={tableScrollRef} className="min-h-[420px] overflow-x-auto rounded-xl border border-[#E5EDF9] bg-[#FBFDFF] p-5 font-mono text-[12px] leading-7 text-[#10233A] scrollbar-hide">
         <div className="min-w-[900px]">
@@ -258,6 +251,45 @@ function LogsView() {
         </div>
       </div>
       <HorizontalTableScrollbar scrollRef={tableScrollRef} />
+    </div>
+  );
+}
+
+function LogsFilterDropdown({ label, value, options, ariaLabel, open, onToggle, onSelect }: {
+  label: string;
+  value: string;
+  options: string[];
+  ariaLabel: string;
+  open: boolean;
+  onToggle: () => void;
+  onSelect: (value: string) => void;
+}) {
+  return (
+    <div className="relative flex min-w-0 flex-col">
+      <span className="font-montserrat text-[13px] font-medium leading-5 text-[#7288A3]">{label}</span>
+      <button
+        type="button"
+        aria-label={ariaLabel}
+        aria-expanded={open}
+        onClick={onToggle}
+        className="flex h-10 w-full items-center justify-between gap-3 border-b-2 border-[#D3E1EC] bg-white px-0 font-montserrat text-[15px] font-medium leading-6 text-[#10233A] outline-none transition-colors hover:border-[#A1B6C6] focus:border-[#007EA7]"
+      >
+        <span className="truncate">{value}</span>
+        <ChevronDown size={17} className={`flex-shrink-0 text-[#7288A3] transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div role="listbox" aria-label={`${ariaLabel} options`} className="absolute left-0 right-0 top-[64px] z-50 max-h-[220px] overflow-y-auto rounded-lg border border-[#D3E1EC] bg-white p-1 shadow-[0_10px_24px_rgba(16,35,58,0.14)]">
+          {options.map(option => {
+            const selected = option === value;
+            return (
+              <button key={option} type="button" role="option" aria-selected={selected} onClick={() => onSelect(option)} className={`flex min-h-10 w-full items-center gap-3 rounded-md px-3 py-2 text-left font-montserrat text-[13px] font-semibold text-[#10233A] transition-colors ${selected ? 'bg-[#E5EDF9]' : 'hover:bg-[#F8FDFF]'}`}>
+                <span className={`flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-[5px] border ${selected ? 'border-[#007EA7] bg-[#007EA7]' : 'border-[#A1B6C6] bg-white'}`}>{selected && <Check size={12} strokeWidth={2.5} className="text-white" />}</span>
+                <span className="truncate">{option}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
